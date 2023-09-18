@@ -2,18 +2,16 @@ package com.tricBuzz.userService.actor.service;
 
 import com.tricBuzz.userService.actor.entity.ActorEntity;
 import com.tricBuzz.userService.actor.model.ActorModel;
+import com.tricBuzz.userService.actor.model.ActorSearchModel;
 import com.tricBuzz.userService.actor.repository.ActorPagingRepository;
 import com.tricBuzz.userService.actor.repository.ActorRepository;
+import com.tricBuzz.userService.common.exception.NotFoundError;
+import com.tricBuzz.userService.common.model.PaginationResponseModel;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.parser.Entity;
 import java.time.Year;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,20 +20,32 @@ public class ActorService {
     private final ActorRepository actorRepository;
     private final ActorPagingRepository actorPagingRepository;
 
-    public ActorModel getActor(long id) {
+    public ActorModel getActorModel(long id) {
+        return convertActorEntity(getActor(id));
+    }
 
+    public ActorEntity getActor(long id) {
         Optional<ActorEntity> optionalActorEntity = actorRepository.findById(id);
 
         if (optionalActorEntity.isEmpty()) {
-            throw new RuntimeException(" Entity for id: " +id + "not found");
+            throw new NotFoundError("Actor for  id: " + id + " not found");
         }
 
-        return convertActorEntity(optionalActorEntity.get());
+        return optionalActorEntity.get();
     }
 
-    public List<ActorModel> getActors(int pageNumber, int limit) {
-        Page<ActorEntity> page = actorPagingRepository.findAll(PageRequest.of(pageNumber,limit));
-        return page.map(this::convertActorEntity).getContent();
+    public PaginationResponseModel<ActorModel> getActors(ActorSearchModel actorSearchModel) {
+        PaginationResponseModel<ActorEntity> actorEntityPaginationResponseModel = actorPagingRepository.search(actorSearchModel);
+        return PaginationResponseModel.<ActorModel>builder()
+                .pageSize(actorEntityPaginationResponseModel.getPageSize())
+                .pageCount(actorEntityPaginationResponseModel.getPageCount())
+                .pageNumber(actorEntityPaginationResponseModel.getPageNumber())
+                .entities(
+                        actorEntityPaginationResponseModel.getEntities()
+                                .stream()
+                                .map(this::convertActorEntity)
+                                .toList())
+                .build();
     }
 
     public ActorModel createActor(ActorModel actorModel) {
@@ -44,7 +54,7 @@ public class ActorService {
     }
 
     private ActorEntity convertActorModel(ActorModel model) {
-        return new ModelMapper().map(model,ActorEntity.class);
+        return new ModelMapper().map(model, ActorEntity.class);
     }
 
     private ActorModel convertActorEntity(ActorEntity entity) {
