@@ -19,8 +19,8 @@ public class ActorModel {
     private int age;
 
     @NonNull
-    private int birthYear;
+    private Integer birthYear;
 
     @NonNull
-    private int yearsPlayed;
+    private Integer yearsPlayed;
 }
