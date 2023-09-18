@@ -1,13 +1,16 @@
-package com.tricBuzz.userService.actor.model;
+package com.tricBuzz.userService.squad.model;
 
+import com.tricBuzz.userService.actor.model.ActorModel;
 import jakarta.annotation.Nullable;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
-public class ActorModel {
+public class SquadGetModel {
 
     @Nullable
     private Long id;
@@ -15,12 +18,9 @@ public class ActorModel {
     @NonNull
     private String name;
 
-    @Nullable
-    private int age;
+    @NonNull
+    private Long organizationId;
 
     @NonNull
-    private Integer birthYear;
-
-    @NonNull
-    private Integer yearsPlayed;
+    private Set<ActorModel> actors;
 }

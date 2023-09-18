@@ -1,11 +1,10 @@
-package squad.entity;
+package com.tricBuzz.userService.squad.entity;
 
 import com.tricBuzz.userService.actor.entity.ActorEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -18,8 +17,8 @@ public class SquadEntity {
     private Long id;
 
     private String name;
-    private Long orgId;
+    private Long organizationId;
 
-    @OneToMany(mappedBy="id")
+    @ManyToMany
     Set<ActorEntity> actors;
 }

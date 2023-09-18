@@ -1,16 +1,15 @@
-package squad.model;
+package com.tricBuzz.userService.squad.model;
 
-import com.tricBuzz.userService.actor.entity.ActorEntity;
 import jakarta.annotation.Nullable;
-import lombok.NonNull;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 import java.util.Set;
 
 @Setter
 @Getter
-public class SquadModel {
+public class SquadPostModel {
 
     @Nullable
     private Long id;
@@ -19,7 +18,8 @@ public class SquadModel {
     private String name;
 
     @NonNull
-    private Long orgId;
+    private Long organizationId;
 
-    Set<ActorEntity> actors;
+    @NonNull
+    Set<Long> actors;
 }
